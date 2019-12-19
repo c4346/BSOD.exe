@@ -1,6 +1,5 @@
 #include <thread>
 #include <iostream>
-#include <conio.h>
 #include <windows.h>
 #include <synchapi.h>
 #pragma comment(lib, "ntdll.lib")
