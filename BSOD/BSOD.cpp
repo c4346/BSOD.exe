@@ -32,7 +32,7 @@ void WarpCursor() {
 POINT cursor;
 	while (true) {
 	GetCursorPos(&cursor);
-	Sleep(5'000);
+	Sleep(1'000);
 	SetCursorPos(cursor.x ,cursor.y);
 	}
 	}
